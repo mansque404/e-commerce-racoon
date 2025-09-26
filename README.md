@@ -68,7 +68,13 @@ Para executar este projeto localmente, você precisará ter o **Docker** e o **D
     REDIS_PORT=6379
     ```
 
-4.  **Construa e inicie os contentores:**
+4.  **Baixe o Docker Desktop:**
+    Windows: https://docs.docker.com/desktop/setup/install/windows-install/
+    Linux: https://docs.docker.com/desktop/setup/install/linux/
+    
+    Aguarde até o final da instalação para os próximos passos.
+
+5.  **Construa e inicie os contentores:**
     Execute o seguinte comando no seu terminal. Ele irá construir a imagem da aplicação e iniciar todos os serviços.
 
     ```bash
