@@ -11,4 +11,4 @@ const pedidoSchema = new mongoose.Schema({
 
 pedidoSchema.index({ priority: 1, status: 1 });
 
-module.exports = mongoose.model('Pedido', pedidoSchema);
+module.exports = mongoose.models.Pedido || mongoose.model('Pedido', pedidoSchema);

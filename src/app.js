@@ -1,6 +1,7 @@
 const express = require('express');
 const path = require('path');
 const { startProcess, getProcessStatus, resetProcess } = require('./controllers/pedidoController');
+require('./queues/orderWorker');
 
 const app = express();
 app.set('view engine', 'ejs');

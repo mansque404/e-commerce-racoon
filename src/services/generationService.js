@@ -1,5 +1,5 @@
 const { faker } = require('@faker-js/faker');
-const Pedido = require('../models/pedido');
+const Pedido = require('../models/Pedido');
 
 /**
  * Gera um lote de objetos de pedido em memória.
