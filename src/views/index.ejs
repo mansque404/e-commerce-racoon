@@ -1,34 +1,85 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
 <head>
-    <title>Teste Backend</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E-commerce Racoon - Simulador de Pedidos</title>
+    <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
-    <h1>Simulador de Processamento de Pedidos</h1>
-    <button onclick="startProcess()">Executar Código</button>
-    <button onclick="resetProcess()">Resetar Banco</button>
+    <div class="container">
+        <header>
+            <img src="/images/racoon_logo.png" alt="E-commerce Racoon Logo" class="logo">
+            <h1>E-commerce Racoon</h1>
+            <p class="tagline">Simulador de Processamento de 1 Milhão de Pedidos com Prioridade</p>
+        </header>
 
-    <h2>Logs de Execução</h2>
-    <pre id="logs">Aguardando execução...</pre>
+        <section class="action-buttons">
+            <button onclick="startProcess()">🚀 Iniciar Simulação de Pedidos</button>
+            <button onclick="resetProcess()">🧹 Resetar Banco e Filas</button>
+        </section>
+
+        <section class="log-section">
+            <h2>Logs de Execução Detalhados</h2>
+            <pre id="logs">Aguardando início da simulação. Clique em "Iniciar Simulação de Pedidos" para começar...</pre>
+        </section>
+    </div>
+
+    <footer>
+        <p>&copy; <%= new Date().getFullYear() %> E-commerce Racoon. Todos os direitos reservados.</p>
+        <p>Desenvolvido para demonstração de backend escalável.</p>
+    </footer>
 
     <script>
-        function startProcess() {
-            document.getElementById('logs').innerText = 'Iniciando... Gerando 1 milhão de pedidos. Isso pode levar um tempo.';
-            fetch('/start-process', { method: 'POST' });
-            // A UI pode ser atualizada periodicamente ou via WebSockets
-            setInterval(updateLogs, 5000);
-        }
-
-        async function updateLogs() {
-            const response = await fetch('/pedidos');
-            const data = await response.json();
-            document.getElementById('logs').innerText = JSON.stringify(data, null, 2);
+        async function startProcess() {
+            document.getElementById('logs').innerText = 'Iniciando simulação... Gerando 1 milhão de pedidos, enfileirando e processando. Isso pode levar um tempo considerável. Por favor, aguarde.';
+            
+            try {
+                const response = await fetch('/start-process', { method: 'POST' });
+                const data = await response.json();
+                console.log('Processo iniciado:', data.message);
+                const logInterval = setInterval(async () => {
+                    const statusResponse = await fetch('/pedidos');
+                    const statusData = await statusResponse.json();
+                    document.getElementById('logs').innerText = JSON.stringify(statusData, null, 2);
+                    
+                    if (statusData.status === 'COMPLETED' || statusData.status === 'ERROR') {
+                        clearInterval(logInterval);
+                        console.log('Simulação concluída ou com erro. Atualizações automáticas de log paradas.');
+                    }
+                }, 5000);
+            } catch (error) {
+                document.getElementById('logs').innerText = `Erro ao iniciar processo: ${error.message}`;
+                console.error('Erro ao iniciar processo:', error);
+            }
         }
 
         async function resetProcess() {
-            if (confirm('Tem certeza que deseja limpar o banco de dados e as filas?')) {
-                await fetch('/reset', { method: 'POST' });
-                document.getElementById('logs').innerText = 'Banco de dados e filas resetados.';
+            if (confirm('Tem certeza que deseja limpar o banco de dados e as filas? Esta ação é irreversível.')) {
+                document.getElementById('logs').innerText = 'Resetando o banco de dados e as filas...';
+                try {
+                    const response = await fetch('/reset', { method: 'POST' });
+                    const data = await response.json();
+                    document.getElementById('logs').innerText = `Reset concluído: ${data.message}\nAguardando início da simulação.`;
+                    console.log('Reset concluído:', data.message);
+                } catch (error) {
+                    document.getElementById('logs').innerText = `Erro ao resetar: ${error.message}`;
+                    console.error('Erro ao resetar:', error);
+                }
+            }
+        }
+
+        window.onload = updateInitialLogs;
+
+        async function updateInitialLogs() {
+            try {
+                const response = await fetch('/pedidos');
+                const data = await response.json();
+                if (data.status !== 'IDLE') {
+                    document.getElementById('logs').innerText = JSON.stringify(data, null, 2);
+                }
+            } catch (error) {
+                console.error('Erro ao carregar logs iniciais:', error);
             }
         }
     </script>
