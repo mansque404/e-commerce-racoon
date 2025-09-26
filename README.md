@@ -69,8 +69,8 @@ Para executar este projeto localmente, você precisará ter o **Docker** e o **D
     ```
 
 4.  **Baixe o Docker Desktop:**
-    Windows: https://docs.docker.com/desktop/setup/install/windows-install/
-    Linux: https://docs.docker.com/desktop/setup/install/linux/
+    * *Windows:**: https://docs.docker.com/desktop/setup/install/windows-install/
+    * *Linux:**: https://docs.docker.com/desktop/setup/install/linux/
     
     Aguarde até o final da instalação para os próximos passos.
 
