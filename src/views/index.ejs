@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Teste Backend</title>
+</head>
+<body>
+    <h1>Simulador de Processamento de Pedidos</h1>
+    <button onclick="startProcess()">Executar Código</button>
+    <button onclick="resetProcess()">Resetar Banco</button>
+
+    <h2>Logs de Execução</h2>
+    <pre id="logs">Aguardando execução...</pre>
+
+    <script>
+        function startProcess() {
+            document.getElementById('logs').innerText = 'Iniciando... Gerando 1 milhão de pedidos. Isso pode levar um tempo.';
+            fetch('/start-process', { method: 'POST' });
+            // A UI pode ser atualizada periodicamente ou via WebSockets
+            setInterval(updateLogs, 5000);
+        }
+
+        async function updateLogs() {
+            const response = await fetch('/pedidos');
+            const data = await response.json();
+            document.getElementById('logs').innerText = JSON.stringify(data, null, 2);
+        }
+
+        async function resetProcess() {
+            if (confirm('Tem certeza que deseja limpar o banco de dados e as filas?')) {
+                await fetch('/reset', { method: 'POST' });
+                document.getElementById('logs').innerText = 'Banco de dados e filas resetados.';
+            }
+        }
+    </script>
+</body>
+</html>
